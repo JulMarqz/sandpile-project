@@ -69,11 +69,36 @@ def topple(pile: Pile, row: int, column: int) -> int:
     return lost
 
 
+
+
 def relax(pile: Pile) -> tuple[int, int]:
     pass
     """ Repeatedly find and topple unstable cells until the pile is stable. Return: (number_of_topplings, number_of_lost_grains)"""
 
+    number_of_topplings = 0
+    number_of_lost_grains = 0
+
+    len_row = len(pile)
+    len_column = len(pile[0])
+
+    i = 0
+    j = 0
+
+    while i < len_row: 
+        if pile[i][j] >= 4:
+            number_of_lost_grains += topple(pile, i, j)
+            number_of_toppings += 1
+
+
+
+
+
+
 def is_stable(pile: Pile) -> bool:
-    """is_stable(pile) -> bool
-    Return True precisely when every cell has height at most three, and False otherwise"""
-    pass
+    """ Returns True precisely when every cell has height at most three, and False otherwise """
+
+    for i in pile:
+        for j in pile:
+            if j > 3:
+                return False
+        return True
