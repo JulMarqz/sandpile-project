@@ -27,9 +27,46 @@ def add_grain(pile: Pile, row: int, column: int) -> None:
 
 
 def topple(pile: Pile, row: int, column: int) -> int:
-    """Topple one unstable cell once. The function may assume that the selected cell has height at least four.
-    It changes the pile and returns the number of grains lost through the boundary during this toppling."""
-    
+    """Topple one unstable cell once and return the grains lost at the edge.
+    The cell is assumed to have height at least four. The pile is changed
+    in place. 
+
+    >>> pile = [[4, 1],[2, 2]]
+    >>> topple(pile, 0, 0)
+    2
+    >>> pile
+    [[0, 2], [3, 2]]
+    """
+
+    lost = 0
+
+    pile[row][column] -= 4
+
+    # if north neighbor exists
+    if row > 0:
+        pile[row - 1][column] += 1
+    else:
+        lost += 1                    
+
+    # if south neighbor exists
+    if row < len(pile) - 1:       
+        pile[row + 1][column] += 1
+    else:
+        lost += 1      
+
+    # if west neighbor exists
+    if column > 0:
+        pile[row][column - 1] += 1
+    else:
+        lost += 1          
+
+    # if east neighbor exists
+    if column < len(pile[0]) - 1:    
+        pile[row][column + 1] += 1
+    else:
+        lost += 1               
+
+    return lost
 
 
 def relax(pile: Pile) -> tuple[int, int]:
