@@ -1,5 +1,4 @@
 Pile = list[list[int]]
-
 def create_pile(rows: int, columns: int) -> Pile:
     """ Returns a rectangular grid with n x m rows and columns. The cells contain only zeros. 
     
@@ -69,11 +68,8 @@ def topple(pile: Pile, row: int, column: int) -> int:
     return lost
 
 
-
-
 def relax(pile: Pile) -> tuple[int, int]:
-    pass
-    """ Repeatedly find and topple unstable cells until the pile is stable. Return: (number_of_topplings, number_of_lost_grains)"""
+    """ Repeatedly find and topple unstable cells until the pile is stable. Returns number of topplings and number of lost grains"""
 
     number_of_topplings = 0
     number_of_lost_grains = 0
@@ -84,18 +80,40 @@ def relax(pile: Pile) -> tuple[int, int]:
     i = 0
     j = 0
 
-    while i < len_row: 
+    while i < len_row:
         if pile[i][j] >= 4:
             number_of_lost_grains += topple(pile, i, j)
-            number_of_toppings += 1
+            number_of_topplings += 1
 
+            # go back after toppling
+            if i > 0:        # north
+                i -= 1
+            elif j > 0:      # west
+                j -= 1
+            # else stay at (0, 0)
 
+        else:
+            j += 1           # go east
+            if j == len_column:   # end of row
+                j = 0
+                i += 1
+
+    return number_of_topplings, number_of_lost_grains
 
 
 
 
 def is_stable(pile: Pile) -> bool:
-    """ Returns True precisely when every cell has height at most three, and False otherwise """
+    """ Returns True precisely when every cell has height at most three, and False otherwise 
+
+    >>> pile = [[2, 1], [1, 3]]
+    >>> is_stable(pile)
+    True
+
+    >>> pile = [[2, 4], [1, 3]]
+    >>> is_stable(pile)
+    False 
+    """
 
     for i in pile:
         for j in pile:
