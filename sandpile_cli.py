@@ -1,165 +1,84 @@
-"""Command-line interface for the sandpile project."""
 
-import random
-import matplotlib.pyplot as plt
-
-from sandpile import create_pile, add_grain, relax
-from sandpile_support.view import SandpileView
+import sandpile
 
 
-def read_positive_integer(prompt: str) -> int:
-    """Repeatedly ask the user for a positive integer until valid input is entered.
-
-    >>> read_positive_integer("Enter rows: ")  # doctest: +SKIP
-    5
-    """
-    while True:
-        user_input = input(prompt)
-
-        try:
-            number = int(user_input)
-        except ValueError:
-            print("Please enter a valid integer.")
-            continue
-
-        if number <= 0:
-            print("Please enter a positive integer.")
-            continue
-
-        return number
+def print_pile(pile):
+    """Print the sandpile in a readable format."""
+    for row in pile:
+        for grain in row:
+            print(grain, end=" ")
+        print()
 
 
-def show_help() -> None:
-    """Print the available commands.
+def main():
+    """Run the sandpile command-line interface."""
 
-    >>> show_help()
-    Available commands:
-    run N - Run N simulation cycles
-    history - Show history plots
-    reset - Reset the simulation
-    help - Show available commands
-    quit - Exit the program
-    """
-    print("Available commands:")
-    print("run N - Run N simulation cycles")
-    print("history - Show history plots")
-    print("reset - Reset the simulation")
-    print("help - Show available commands")
-    print("quit - Exit the program")
+    print("Welcome to the Sandpile Simulator!")
 
+    rows = int(input("Enter number of rows: "))
+    columns = int(input("Enter number of columns: "))
 
-def show_history(toppling_history: list[int],
-                 loss_history: list[int]) -> None:
-    """Display plots of topplings and grains lost in each cycle.
+    pile = sandpile.create_pile(rows, columns)
 
-    >>> show_history([], [])
-    No history available yet.
-    """
-    if len(toppling_history) == 0:
-        print("No history available yet.")
-        return
-
-    cycles = list(range(1, len(toppling_history) + 1))
-
-    plt.figure()
-
-    plt.plot(cycles, toppling_history, label="Topplings")
-    plt.plot(cycles, loss_history, label="Grains lost")
-
-    plt.xlabel("Simulation cycle")
-    plt.ylabel("Number")
-    plt.title("Sandpile simulation history")
-    plt.legend()
-    plt.grid(True)
-
-    plt.show(block=False)
-    plt.pause(0.1)
-
-
-def main() -> None:
-    """Start the sandpile simulation and process user commands.
-
-    >>> callable(main)
-    True
-    """
-    rows = read_positive_integer("Enter number of rows: ")
-    columns = read_positive_integer("Enter number of columns: ")
-
-    pile = create_pile(rows, columns)
-
-    grains_added = 0
-    grains_lost = 0
-    topplings = 0
-
-    toppling_history = []
-    loss_history = []
-
-    view = SandpileView(rows, columns)
-    view.update(pile, grains_added, grains_lost, topplings)
-
-    show_help()
+    print("\nSandpile created!")
+    print_pile(pile)
 
     while True:
-        command = input("Enter command: ").strip().lower()
-        parts = command.split()
+        print("\nChoose an option:")
+        print("1. Show sandpile")
+        print("2. Add a grain")
+        print("3. Topple a cell")
+        print("4. Relax sandpile")
+        print("5. Check if stable")
+        print("6. Quit")
 
-        if command == "quit":
-            view.close()
+        choice = input("Enter your choice (1-6): ")
+
+        if choice == "1":
+            print_pile(pile)
+
+        elif choice == "2":
+            row = int(input("Enter row: "))
+            column = int(input("Enter column: "))
+
+            if 0 <= row < rows and 0 <= column < columns:
+                sandpile.add_grain(pile, row, column)
+                print("Grain added!")
+                print_pile(pile)
+            else:
+                print("Invalid row or column.")
+
+        elif choice == "3":
+            row = int(input("Enter row: "))
+            column = int(input("Enter column: "))
+
+            if not (0 <= row < rows and 0 <= column < columns):
+                print("Invalid row or column.")
+            elif pile[row][column] < 4:
+                print("This cell is not unstable.")
+            else:
+                lost = sandpile.topple(pile, row, column)
+                print("Grains lost:", lost)
+                print_pile(pile)
+
+        elif choice == "4":
+            topplings, lost = sandpile.relax(pile)
+            print("Number of topplings:", topplings)
+            print("Grains lost:", lost)
+            print_pile(pile)
+
+        elif choice == "5":
+            if sandpile.is_stable(pile):
+                print("The sandpile is stable.")
+            else:
+                print("The sandpile is unstable.")
+
+        elif choice == "6":
+            print("Goodbye!")
             break
 
-        elif command == "help":
-            show_help()
-
-        elif command == "reset":
-            pile = create_pile(rows, columns)
-
-            grains_added = 0
-            grains_lost = 0
-            topplings = 0
-
-            toppling_history = []
-            loss_history = []
-
-            view.update(pile, grains_added, grains_lost, topplings)
-
-        elif command == "history":
-            show_history(toppling_history, loss_history)
-
-        elif len(parts) > 0 and parts[0] == "run":
-
-            if len(parts) != 2:
-                print("Please use: run N")
-                continue
-
-            try:
-                cycles = int(parts[1])
-            except ValueError:
-                print("N must be a positive integer.")
-                continue
-
-            if cycles <= 0:
-                print("N must be a positive integer.")
-                continue
-
-            for i in range(cycles):
-                row = random.randrange(rows)
-                column = random.randrange(columns)
-
-                add_grain(pile, row, column)
-                grains_added += 1
-
-                cycle_topplings, cycle_losses = relax(pile)
-
-                topplings += cycle_topplings
-                grains_lost += cycle_losses
-
-                toppling_history.append(cycle_topplings)
-                loss_history.append(cycle_losses)
-
-            view.update(pile, grains_added, grains_lost, topplings)
-
         else:
-            print("Unknown command. Type 'help' for available commands.")
+            print("Invalid choice. Please choose 1-6.")
 
 
 if __name__ == "__main__":
