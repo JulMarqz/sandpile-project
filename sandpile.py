@@ -21,7 +21,7 @@ def add_grain(pile: Pile, row: int, column: int) -> None:
     pile[row][column] += 1
 
 
-def topple(pile: Pile, row: int, column: int) -> int:
+def topple(pile: Pile, i: int, j: int) -> int:
     """Topple one unstable cell once and return the grains lost at the edge.
     The cell is assumed to have height at least four. The pile is changed
     in place. 
@@ -34,32 +34,31 @@ def topple(pile: Pile, row: int, column: int) -> int:
     """
 
     lost = 0
-
-    pile[row][column] -= 4
+    pile[i][j] -= 4
 
     # if north neighbor exists
-    if row > 0:
-        pile[row - 1][column] += 1
+    if i > 0:
+        pile[i - 1][j] += 1
     else:
-        lost += 1                    
+        lost += 1
 
     # if south neighbor exists
-    if row < len(pile) - 1:       
-        pile[row + 1][column] += 1
+    if i < len(pile) - 1:
+        pile[i + 1][j] += 1
     else:
-        lost += 1      
+        lost += 1
 
     # if west neighbor exists
-    if column > 0:
-        pile[row][column - 1] += 1
+    if j > 0:
+        pile[i][j - 1] += 1
     else:
-        lost += 1          
+        lost += 1
 
     # if east neighbor exists
-    if column < len(pile[0]) - 1:    
-        pile[row][column + 1] += 1
+    if j < len(pile[0]) - 1:
+        pile[i][j + 1] += 1
     else:
-        lost += 1               
+        lost += 1
 
     return lost
 
