@@ -66,12 +66,12 @@ def topple(pile: Pile, i: int, j: int) -> int:
 def relax(pile: Pile) -> tuple[int, int]:
     """ Repeatedly find and topple unstable cells until the pile is stable. Returns number of topplings and number of lost grains 
     
-    >>> pile = [[1, 2, 3, 4], [1, 2, 3, 4]]
+    >>> pile = [[1, 4, 3], [2, 2, 1], [1, 1, 1]]
     >>> result = relax(pile)
     >>> result
-    (4, 6)
+    (2, 3)
     >>> pile
-    [[1, 3, 1, 2], [1, 3, 1, 2]]
+    [[2, 1, 0], [2, 3, 2], [1, 1, 1]]
     """
 
     number_of_topplings = 0
