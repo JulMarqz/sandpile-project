@@ -148,23 +148,26 @@ def main() -> None:
                 # Cycle numbers start at 1
                 cycles = range(1, len(toppling_history) + 1)
 
-                # Draw the history graph.
-                plt.figure("Sandpile History")
-                plt.clf()
+                # Drawing the history graph
+                fig = plt.figure("Sandpile History", figsize=(10, 7))
+                fig.clf()
+                ax1, ax2 = fig.subplots(2, 1, sharex=True)
 
-                plt.plot(
-                    cycles, toppling_history, label="Topplings"
-                )
-                plt.plot(
-                    cycles, lost_history, label="Grains lost"
-                )
+                # Topplings
+                ax1.plot(cycles, toppling_history, "k-")
+                ax1.set_ylabel("Topplings per cycle")
+                ax1.grid(True, color="lightgray")
 
-                plt.xlabel("Cycle number")
-                plt.ylabel("Count per cycle")
-                plt.title("Sandpile History")
-                plt.legend()
+                # Grains lost
+                ax2.plot(cycles, lost_history, "k--")
+                ax2.set_ylabel("Grains lost per cycle")
+                ax2.set_xlabel("Cycle number")
+                ax2.grid(True, color="lightgray")
 
-                # Show the graph and keep the terminal usable
+                fig.suptitle("Sandpile History")
+                fig.tight_layout()
+
+                # Display without blocking the terminal
                 plt.show(block=False)
                 plt.pause(0.1)
 
