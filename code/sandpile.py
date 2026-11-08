@@ -1,3 +1,21 @@
+"""
+Functions for the Abelian sandpile simulation.
+
+A pile is a rectangular grid where each cell holds a number of grains. 
+It is stored as a nested list of nonnegative integers. 
+A cell with four or more grains is unstable and topples, losing its grains to its four neighbours.
+Grains pushed past the edges of the grid are lost.
+
+Functions:
+    create_pile: makes an empty pile
+    add_grain: adds one grain to a cell
+    topple: topples one unstable cell
+    relax: topples until the pile is stable
+    is_stable: checks whether every cell is stable
+"""
+
+
+
 Pile = list[list[int]]
 
 def create_pile(rows: int, columns: int) -> Pile:

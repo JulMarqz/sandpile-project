@@ -6,12 +6,12 @@ Command-line interface for the Abelian sandpile simulation.
 import random
 import matplotlib.pyplot as plt
 from sandpile_support.view import SandpileView
-import sandpile
+import sandpile as sandpile
 
 
 def main() -> None:
     """Run the sandpile simulation and respond to user commands.
-
+50
     >>> callable(main)
     True
     """
